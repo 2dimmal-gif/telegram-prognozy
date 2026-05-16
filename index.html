@@ -1,172 +1,424 @@
-<!doctype html>
-<html lang="ru">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Прогнозы на матчи</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>World Cup 2026 Predictions</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    body {
+    :root {
+      --tg-bg: var(--tg-theme-bg-color, #1a1a2e);
+      --tg-text: var(--tg-theme-text-color, #ffffff);
+      --tg-hint: var(--tg-theme-hint-color, #aaaaaa);
+      --tg-link: var(--tg-theme-link-color, #6c9bea);
+      --tg-button: var(--tg-theme-button-color, #2ea44f);
+      --tg-button-text: var(--tg-theme-button-text-color, #ffffff);
+      --tg-secondary-bg: var(--tg-theme-secondary-bg-color, #16213e);
+      --tg-card: rgba(255,255,255,0.06);
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
       margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f4f5f7;
-      color: #111827;
+      padding: 0;
     }
-    .wrap {
-      max-width: 520px;
-      margin: 0 auto;
-      padding: 16px;
+
+    body {
+      background-color: var(--tg-bg);
+      color: var(--tg-text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 15px;
+      min-height: 100vh;
+      padding-bottom: 100px;
     }
-    h1 {
-      font-size: 22px;
-      margin: 8px 0 4px;
+
+    header {
+      background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+      padding: 20px 16px 16px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
-    .note {
-      font-size: 14px;
-      color: #6b7280;
-      margin-bottom: 16px;
-    }
-    .card {
-      background: white;
-      border-radius: 16px;
-      padding: 14px;
-      margin-bottom: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-    }
-    .teams {
-      font-weight: 700;
-      font-size: 17px;
+
+    header .trophy {
+      font-size: 36px;
+      display: block;
       margin-bottom: 6px;
     }
-    .deadline {
-      font-size: 13px;
-      color: #6b7280;
-      margin-bottom: 10px;
+
+    header h1 {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
     }
-    .score-row {
+
+    header p {
+      font-size: 12px;
+      color: var(--tg-hint);
+      margin-top: 4px;
+    }
+
+    .groups-container {
+      padding: 12px;
+    }
+
+    .group-section {
+      margin-bottom: 16px;
+    }
+
+    .group-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--tg-hint);
+      padding: 0 4px 8px;
+    }
+
+    .match-card {
+      background: var(--tg-card);
+      border-radius: var(--radius);
+      border: 1px solid rgba(255,255,255,0.07);
+      padding: 12px 14px;
+      margin-bottom: 8px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
-    input {
-      width: 58px;
+
+    .team {
+      flex: 1;
+      text-align: center;
+    }
+
+    .team-flag {
+      font-size: 26px;
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .team-name {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--tg-text);
+      white-space: nowrap;
+    }
+
+    .score-inputs {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .score-input {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      border: 1.5px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.08);
+      color: var(--tg-text);
       font-size: 20px;
-      text-align: center;
-      padding: 10px;
-      border-radius: 12px;
-      border: 1px solid #d1d5db;
-    }
-    .colon {
-      font-size: 22px;
       font-weight: 700;
+      text-align: center;
+      outline: none;
+      -webkit-appearance: none;
+      -moz-appearance: textfield;
+      transition: border-color 0.2s, background 0.2s;
     }
-    .penalty {
-      margin-top: 10px;
-      font-size: 14px;
-      color: #374151;
+
+    .score-input:focus {
+      border-color: var(--tg-button);
+      background: rgba(255,255,255,0.12);
     }
-    select {
-      width: 100%;
+
+    .score-input::-webkit-inner-spin-button,
+    .score-input::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+    }
+
+    .score-separator {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--tg-hint);
+      flex-shrink: 0;
+    }
+
+    .match-date {
+      font-size: 10px;
+      color: var(--tg-hint);
+      text-align: center;
       margin-top: 6px;
-      padding: 10px;
-      border-radius: 12px;
-      border: 1px solid #d1d5db;
-      font-size: 15px;
     }
-    button {
+
+    .match-card-inner {
       width: 100%;
-      margin-top: 14px;
-      padding: 14px;
-      font-size: 17px;
-      font-weight: 700;
-      border: 0;
-      border-radius: 14px;
-      background: #2563eb;
-      color: white;
     }
-    .small {
-      font-size: 12px;
-      color: #6b7280;
+
+    .match-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .submit-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 12px 16px;
+      background: var(--tg-bg);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      z-index: 20;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: var(--radius);
+      border: none;
+      background: var(--tg-button);
+      color: var(--tg-button-text);
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      letter-spacing: 0.2px;
+    }
+
+    .submit-btn:active {
+      opacity: 0.85;
+      transform: scale(0.98);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .progress-bar {
+      height: 4px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 2px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--tg-button);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      font-size: 11px;
+      color: var(--tg-hint);
       text-align: center;
-      margin-top: 10px;
+      margin-bottom: 8px;
+    }
+
+    .alert {
+      margin: 12px;
+      padding: 12px 14px;
+      border-radius: var(--radius);
+      background: rgba(46, 164, 79, 0.15);
+      border: 1px solid rgba(46, 164, 79, 0.3);
+      color: #4caf50;
+      font-size: 13px;
+      text-align: center;
+      display: none;
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>⚽ Прогнозы на матчи</h1>
-    <div class="note">Заполните счет и нажмите “Отправить прогнозы”. После дедлайна ставки не принимаются.</div>
 
-    <div id="matches"></div>
+<header>
+  <span class="trophy">🏆</span>
+  <h1>World Cup 2026 Predictions</h1>
+  <p>Enter your score predictions for all matches</p>
+</header>
 
-    <button onclick="submitPredictions()">Отправить прогнозы</button>
-    <div class="small">Данные будут отправлены организатору тотализатора.</div>
+<div class="groups-container" id="matchesContainer"></div>
+
+<div class="alert" id="successAlert">✅ Predictions submitted! Good luck! 🤞</div>
+
+<div class="submit-bar">
+  <div class="progress-text" id="progressText">0 of 0 matches filled</div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill" style="width:0%"></div>
   </div>
+  <button class="submit-btn" id="submitBtn" onclick="submitPredictions()">
+    Submit Predictions ⚽
+  </button>
+</div>
 
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
+<script>
+  const tg = window.Telegram.WebApp;
+  tg.ready();
+  tg.expand();
 
-    const matches = [
-      { id: 1, home: "🇺🇸 США", away: "🇲🇽 Мексика", deadline: "10 июня, 11:00" },
-      { id: 2, home: "🇧🇷 Бразилия", away: "🇩🇪 Германия", deadline: "10 июня, 14:00" },
-      { id: 3, home: "🇫🇷 Франция", away: "🇦🇷 Аргентина", deadline: "11 июня, 09:00" }
-    ];
+  // ─── MATCH FIXTURES ──────────────────────────────────────────────
+  // Edit this list to add/remove matches.
+  // Flags are optional emoji – remove if not needed.
+  const matchGroups = [
+    {
+      label: "Group A",
+      matches: [
+        { id: "a1", home: "USA",      homeFlag: "🇺🇸", away: "Canada",    awayFlag: "🇨🇦", date: "Jun 12" },
+        { id: "a2", home: "Uruguay",  homeFlag: "🇺🇾", away: "Portugal",  awayFlag: "🇵🇹", date: "Jun 12" },
+        { id: "a3", home: "USA",      homeFlag: "🇺🇸", away: "Uruguay",   awayFlag: "🇺🇾", date: "Jun 17" },
+        { id: "a4", home: "Canada",   homeFlag: "🇨🇦", away: "Portugal",  awayFlag: "🇵🇹", date: "Jun 17" },
+        { id: "a5", home: "Canada",   homeFlag: "🇨🇦", away: "Uruguay",   awayFlag: "🇺🇾", date: "Jun 22" },
+        { id: "a6", home: "Portugal", homeFlag: "🇵🇹", away: "USA",       awayFlag: "🇺🇸", date: "Jun 22" },
+      ]
+    },
+    {
+      label: "Group B",
+      matches: [
+        { id: "b1", home: "Argentina", homeFlag: "🇦🇷", away: "Chile",    awayFlag: "🇨🇱", date: "Jun 13" },
+        { id: "b2", home: "England",   homeFlag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", away: "Peru",     awayFlag: "🇵🇪", date: "Jun 13" },
+        { id: "b3", home: "Argentina", homeFlag: "🇦🇷", away: "England",  awayFlag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", date: "Jun 18" },
+        { id: "b4", home: "Chile",     homeFlag: "🇨🇱", away: "Peru",     awayFlag: "🇵🇪", date: "Jun 18" },
+        { id: "b5", home: "Chile",     homeFlag: "🇨🇱", away: "England",  awayFlag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", date: "Jun 23" },
+        { id: "b6", home: "Peru",      homeFlag: "🇵🇪", away: "Argentina", awayFlag: "🇦🇷", date: "Jun 23" },
+      ]
+    },
+    {
+      label: "Group C",
+      matches: [
+        { id: "c1", home: "France",  homeFlag: "🇫🇷", away: "Mexico",  awayFlag: "🇲🇽", date: "Jun 14" },
+        { id: "c2", home: "Germany", homeFlag: "🇩🇪", away: "Japan",   awayFlag: "🇯🇵", date: "Jun 14" },
+        { id: "c3", home: "France",  homeFlag: "🇫🇷", away: "Germany", awayFlag: "🇩🇪", date: "Jun 19" },
+        { id: "c4", home: "Mexico",  homeFlag: "🇲🇽", away: "Japan",   awayFlag: "🇯🇵", date: "Jun 19" },
+        { id: "c5", home: "Mexico",  homeFlag: "🇲🇽", away: "Germany", awayFlag: "🇩🇪", date: "Jun 24" },
+        { id: "c6", home: "Japan",   homeFlag: "🇯🇵", away: "France",  awayFlag: "🇫🇷", date: "Jun 24" },
+      ]
+    },
+    {
+      label: "Group D",
+      matches: [
+        { id: "d1", home: "Brazil",  homeFlag: "🇧🇷", away: "Nigeria",  awayFlag: "🇳🇬", date: "Jun 15" },
+        { id: "d2", home: "Spain",   homeFlag: "🇪🇸", away: "Morocco",  awayFlag: "🇲🇦", date: "Jun 15" },
+        { id: "d3", home: "Brazil",  homeFlag: "🇧🇷", away: "Spain",    awayFlag: "🇪🇸", date: "Jun 20" },
+        { id: "d4", home: "Nigeria", homeFlag: "🇳🇬", away: "Morocco",  awayFlag: "🇲🇦", date: "Jun 20" },
+        { id: "d5", home: "Nigeria", homeFlag: "🇳🇬", away: "Spain",    awayFlag: "🇪🇸", date: "Jun 25" },
+        { id: "d6", home: "Morocco", homeFlag: "🇲🇦", away: "Brazil",   awayFlag: "🇧🇷", date: "Jun 25" },
+      ]
+    },
+  ];
+  // ─────────────────────────────────────────────────────────────────
 
-    function renderMatches() {
-      const container = document.getElementById("matches");
-      container.innerHTML = matches.map(match => `
-        <div class="card" data-id="${match.id}">
-          <div class="teams">${match.home} - ${match.away}</div>
-          <div class="deadline">Прием прогнозов до: ${match.deadline}</div>
-          <div class="score-row">
-            <input type="number" min="0" max="20" id="home-${match.id}" placeholder="0" />
-            <span class="colon">:</span>
-            <input type="number" min="0" max="20" id="away-${match.id}" placeholder="0" />
+  const allMatches = matchGroups.flatMap(g => g.matches);
+  const totalMatches = allMatches.length;
+
+  function renderMatches() {
+    const container = document.getElementById("matchesContainer");
+    container.innerHTML = "";
+
+    for (const group of matchGroups) {
+      const section = document.createElement("div");
+      section.className = "group-section";
+
+      const label = document.createElement("div");
+      label.className = "group-label";
+      label.textContent = group.label;
+      section.appendChild(label);
+
+      for (const match of group.matches) {
+        const card = document.createElement("div");
+        card.className = "match-card";
+        card.innerHTML = `
+          <div class="match-card-inner">
+            <div class="match-row">
+              <div class="team">
+                <span class="team-flag">${match.homeFlag || "🏳️"}</span>
+                <span class="team-name">${match.home}</span>
+              </div>
+              <div class="score-inputs">
+                <input
+                  class="score-input"
+                  id="home_${match.id}"
+                  type="number"
+                  min="0"
+                  max="99"
+                  placeholder="0"
+                  oninput="updateProgress()"
+                  inputmode="numeric"
+                />
+                <span class="score-separator">–</span>
+                <input
+                  class="score-input"
+                  id="away_${match.id}"
+                  type="number"
+                  min="0"
+                  max="99"
+                  placeholder="0"
+                  oninput="updateProgress()"
+                  inputmode="numeric"
+                />
+              </div>
+              <div class="team">
+                <span class="team-flag">${match.awayFlag || "🏳️"}</span>
+                <span class="team-name">${match.away}</span>
+              </div>
+            </div>
+            <div class="match-date">${match.date}</div>
           </div>
-          <div class="penalty">
-            Пенальти, если матч плей-офф:
-            <select id="penalty-${match.id}">
-              <option value="">Нет / не нужно</option>
-              <option value="${match.home}">${match.home}</option>
-              <option value="${match.away}">${match.away}</option>
-            </select>
-          </div>
-        </div>
-      `).join("");
-    }
-
-    function submitPredictions() {
-      const predictions = matches.map(match => {
-        const homeScore = document.getElementById(`home-${match.id}`).value;
-        const awayScore = document.getElementById(`away-${match.id}`).value;
-        const penaltyWinner = document.getElementById(`penalty-${match.id}`).value;
-
-        return {
-          matchId: match.id,
-          match: `${match.home} - ${match.away}`,
-          score: `${homeScore}:${awayScore}`,
-          penaltyWinner: penaltyWinner || null
-        };
-      });
-
-      const empty = predictions.some(p => p.score.includes(":" ) && (p.score.startsWith(":") || p.score.endsWith(":")));
-      if (empty) {
-        tg.showAlert("Пожалуйста, заполните счет для всех матчей.");
-        return;
+        `;
+        section.appendChild(card);
       }
 
-      const payload = {
-        user: tg.initDataUnsafe?.user || null,
-        submittedAt: new Date().toISOString(),
-        predictions
-      };
-
-      tg.sendData(JSON.stringify(payload));
-      tg.close();
+      container.appendChild(section);
     }
 
-    renderMatches();
-  </script>
+    updateProgress();
+  }
+
+  function countFilled() {
+    return allMatches.filter(m => {
+      const h = document.getElementById(`home_${m.id}`);
+      const a = document.getElementById(`away_${m.id}`);
+      return h && a && h.value !== "" && a.value !== "";
+    }).length;
+  }
+
+  function updateProgress() {
+    const filled = countFilled();
+    const pct = totalMatches > 0 ? (filled / totalMatches) * 100 : 0;
+    document.getElementById("progressFill").style.width = pct + "%";
+    document.getElementById("progressText").textContent =
+      `${filled} of ${totalMatches} matches filled`;
+  }
+
+  function submitPredictions() {
+    const predictions = allMatches.map(match => {
+      const hs = document.getElementById(`home_${match.id}`).value;
+      const as_ = document.getElementById(`away_${match.id}`).value;
+      return {
+        home: match.home,
+        away: match.away,
+        home_score: hs !== "" ? parseInt(hs) : null,
+        away_score: as_ !== "" ? parseInt(as_) : null,
+      };
+    }).filter(p => p.home_score !== null && p.away_score !== null);
+
+    if (predictions.length === 0) {
+      tg.showAlert("Please fill in at least one match prediction before submitting.");
+      return;
+    }
+
+    const btn = document.getElementById("submitBtn");
+    btn.disabled = true;
+    btn.textContent = "Submitting...";
+
+    tg.sendData(JSON.stringify({ predictions }));
+  }
+
+  renderMatches();
+</script>
 </body>
 </html>
