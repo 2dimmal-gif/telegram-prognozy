@@ -1,194 +1,172 @@
-{\rtf1\ansi\ansicpg1252\cocoartf2513
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 AppleColorEmoji;}
-{\colortbl;\red255\green255\blue255;}
-{\*\expandedcolortbl;;}
-\margl1440\margr1440\vieww10800\viewh8400\viewkind0
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Прогнозы на матчи</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f4f5f7;
+      color: #111827;
+    }
+    .wrap {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+    h1 {
+      font-size: 22px;
+      margin: 8px 0 4px;
+    }
+    .note {
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 16px;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+    .teams {
+      font-weight: 700;
+      font-size: 17px;
+      margin-bottom: 6px;
+    }
+    .deadline {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 10px;
+    }
+    .score-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    input {
+      width: 58px;
+      font-size: 20px;
+      text-align: center;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid #d1d5db;
+    }
+    .colon {
+      font-size: 22px;
+      font-weight: 700;
+    }
+    .penalty {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #374151;
+    }
+    select {
+      width: 100%;
+      margin-top: 6px;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid #d1d5db;
+      font-size: 15px;
+    }
+    button {
+      width: 100%;
+      margin-top: 14px;
+      padding: 14px;
+      font-size: 17px;
+      font-weight: 700;
+      border: 0;
+      border-radius: 14px;
+      background: #2563eb;
+      color: white;
+    }
+    .small {
+      font-size: 12px;
+      color: #6b7280;
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>⚽ Прогнозы на матчи</h1>
+    <div class="note">Заполните счет и нажмите “Отправить прогнозы”. После дедлайна ставки не принимаются.</div>
 
-\f0\fs24 \cf0 <!doctype html>\
-<html lang="ru">\
-<head>\
-  <meta charset="UTF-8" />\
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />\
-  <title>\uc0\u1055 \u1088 \u1086 \u1075 \u1085 \u1086 \u1079 \u1099  \u1085 \u1072  \u1084 \u1072 \u1090 \u1095 \u1080 </title>\
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>\
-  <style>\
-    body \{\
-      margin: 0;\
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;\
-      background: #f4f5f7;\
-      color: #111827;\
-    \}\
-    .wrap \{\
-      max-width: 520px;\
-      margin: 0 auto;\
-      padding: 16px;\
-    \}\
-    h1 \{\
-      font-size: 22px;\
-      margin: 8px 0 4px;\
-    \}\
-    .note \{\
-      font-size: 14px;\
-      color: #6b7280;\
-      margin-bottom: 16px;\
-    \}\
-    .card \{\
-      background: white;\
-      border-radius: 16px;\
-      padding: 14px;\
-      margin-bottom: 12px;\
-      box-shadow: 0 2px 10px rgba(0,0,0,0.06);\
-    \}\
-    .teams \{\
-      font-weight: 700;\
-      font-size: 17px;\
-      margin-bottom: 6px;\
-    \}\
-    .deadline \{\
-      font-size: 13px;\
-      color: #6b7280;\
-      margin-bottom: 10px;\
-    \}\
-    .score-row \{\
-      display: flex;\
-      align-items: center;\
-      gap: 8px;\
-    \}\
-    input \{\
-      width: 58px;\
-      font-size: 20px;\
-      text-align: center;\
-      padding: 10px;\
-      border-radius: 12px;\
-      border: 1px solid #d1d5db;\
-    \}\
-    .colon \{\
-      font-size: 22px;\
-      font-weight: 700;\
-    \}\
-    .penalty \{\
-      margin-top: 10px;\
-      font-size: 14px;\
-      color: #374151;\
-    \}\
-    select \{\
-      width: 100%;\
-      margin-top: 6px;\
-      padding: 10px;\
-      border-radius: 12px;\
-      border: 1px solid #d1d5db;\
-      font-size: 15px;\
-    \}\
-    button \{\
-      width: 100%;\
-      margin-top: 14px;\
-      padding: 14px;\
-      font-size: 17px;\
-      font-weight: 700;\
-      border: 0;\
-      border-radius: 14px;\
-      background: #2563eb;\
-      color: white;\
-    \}\
-    .small \{\
-      font-size: 12px;\
-      color: #6b7280;\
-      text-align: center;\
-      margin-top: 10px;\
-    \}\
-  </style>\
-</head>\
-<body>\
-  <div class="wrap">\
-    <h1>
-\f1 \uc0\u9917 
-\f0  \uc0\u1055 \u1088 \u1086 \u1075 \u1085 \u1086 \u1079 \u1099  \u1085 \u1072  \u1084 \u1072 \u1090 \u1095 \u1080 </h1>\
-    <div class="note">\uc0\u1047 \u1072 \u1087 \u1086 \u1083 \u1085 \u1080 \u1090 \u1077  \u1089 \u1095 \u1077 \u1090  \u1080  \u1085 \u1072 \u1078 \u1084 \u1080 \u1090 \u1077  \'93\u1054 \u1090 \u1087 \u1088 \u1072 \u1074 \u1080 \u1090 \u1100  \u1087 \u1088 \u1086 \u1075 \u1085 \u1086 \u1079 \u1099 \'94. \u1055 \u1086 \u1089 \u1083 \u1077  \u1076 \u1077 \u1076 \u1083 \u1072 \u1081 \u1085 \u1072  \u1089 \u1090 \u1072 \u1074 \u1082 \u1080  \u1085 \u1077  \u1087 \u1088 \u1080 \u1085 \u1080 \u1084 \u1072 \u1102 \u1090 \u1089 \u1103 .</div>\
-\
-    <div id="matches"></div>\
-\
-    <button onclick="submitPredictions()">\uc0\u1054 \u1090 \u1087 \u1088 \u1072 \u1074 \u1080 \u1090 \u1100  \u1087 \u1088 \u1086 \u1075 \u1085 \u1086 \u1079 \u1099 </button>\
-    <div class="small">\uc0\u1044 \u1072 \u1085 \u1085 \u1099 \u1077  \u1073 \u1091 \u1076 \u1091 \u1090  \u1086 \u1090 \u1087 \u1088 \u1072 \u1074 \u1083 \u1077 \u1085 \u1099  \u1086 \u1088 \u1075 \u1072 \u1085 \u1080 \u1079 \u1072 \u1090 \u1086 \u1088 \u1091  \u1090 \u1086 \u1090 \u1072 \u1083 \u1080 \u1079 \u1072 \u1090 \u1086 \u1088 \u1072 .</div>\
-  </div>\
-\
-  <script>\
-    const tg = window.Telegram.WebApp;\
-    tg.expand();\
-\
-    const matches = [\
-      \{ id: 1, home: "
-\f1 \uc0\u55356 \u56826 \u55356 \u56824 
-\f0  \uc0\u1057 \u1064 \u1040 ", away: "
-\f1 \uc0\u55356 \u56818 \u55356 \u56829 
-\f0  \uc0\u1052 \u1077 \u1082 \u1089 \u1080 \u1082 \u1072 ", deadline: "10 \u1080 \u1102 \u1085 \u1103 , 11:00" \},\
-      \{ id: 2, home: "
-\f1 \uc0\u55356 \u56807 \u55356 \u56823 
-\f0  \uc0\u1041 \u1088 \u1072 \u1079 \u1080 \u1083 \u1080 \u1103 ", away: "
-\f1 \uc0\u55356 \u56809 \u55356 \u56810 
-\f0  \uc0\u1043 \u1077 \u1088 \u1084 \u1072 \u1085 \u1080 \u1103 ", deadline: "10 \u1080 \u1102 \u1085 \u1103 , 14:00" \},\
-      \{ id: 3, home: "
-\f1 \uc0\u55356 \u56811 \u55356 \u56823 
-\f0  \uc0\u1060 \u1088 \u1072 \u1085 \u1094 \u1080 \u1103 ", away: "
-\f1 \uc0\u55356 \u56806 \u55356 \u56823 
-\f0  \uc0\u1040 \u1088 \u1075 \u1077 \u1085 \u1090 \u1080 \u1085 \u1072 ", deadline: "11 \u1080 \u1102 \u1085 \u1103 , 09:00" \}\
-    ];\
-\
-    function renderMatches() \{\
-      const container = document.getElementById("matches");\
-      container.innerHTML = matches.map(match => `\
-        <div class="card" data-id="$\{match.id\}">\
-          <div class="teams">$\{match.home\} - $\{match.away\}</div>\
-          <div class="deadline">\uc0\u1055 \u1088 \u1080 \u1077 \u1084  \u1087 \u1088 \u1086 \u1075 \u1085 \u1086 \u1079 \u1086 \u1074  \u1076 \u1086 : $\{match.deadline\}</div>\
-          <div class="score-row">\
-            <input type="number" min="0" max="20" id="home-$\{match.id\}" placeholder="0" />\
-            <span class="colon">:</span>\
-            <input type="number" min="0" max="20" id="away-$\{match.id\}" placeholder="0" />\
-          </div>\
-          <div class="penalty">\
-            \uc0\u1055 \u1077 \u1085 \u1072 \u1083 \u1100 \u1090 \u1080 , \u1077 \u1089 \u1083 \u1080  \u1084 \u1072 \u1090 \u1095  \u1087 \u1083 \u1077 \u1081 -\u1086 \u1092 \u1092 :\
-            <select id="penalty-$\{match.id\}">\
-              <option value="">\uc0\u1053 \u1077 \u1090  / \u1085 \u1077  \u1085 \u1091 \u1078 \u1085 \u1086 </option>\
-              <option value="$\{match.home\}">$\{match.home\}</option>\
-              <option value="$\{match.away\}">$\{match.away\}</option>\
-            </select>\
-          </div>\
-        </div>\
-      `).join("");\
-    \}\
-\
-    function submitPredictions() \{\
-      const predictions = matches.map(match => \{\
-        const homeScore = document.getElementById(`home-$\{match.id\}`).value;\
-        const awayScore = document.getElementById(`away-$\{match.id\}`).value;\
-        const penaltyWinner = document.getElementById(`penalty-$\{match.id\}`).value;\
-\
-        return \{\
-          matchId: match.id,\
-          match: `$\{match.home\} - $\{match.away\}`,\
-          score: `$\{homeScore\}:$\{awayScore\}`,\
-          penaltyWinner: penaltyWinner || null\
-        \};\
-      \});\
-\
-      const empty = predictions.some(p => p.score.includes(":" ) && (p.score.startsWith(":") || p.score.endsWith(":")));\
-      if (empty) \{\
-        tg.showAlert("\uc0\u1055 \u1086 \u1078 \u1072 \u1083 \u1091 \u1081 \u1089 \u1090 \u1072 , \u1079 \u1072 \u1087 \u1086 \u1083 \u1085 \u1080 \u1090 \u1077  \u1089 \u1095 \u1077 \u1090  \u1076 \u1083 \u1103  \u1074 \u1089 \u1077 \u1093  \u1084 \u1072 \u1090 \u1095 \u1077 \u1081 .");\
-        return;\
-      \}\
-\
-      const payload = \{\
-        user: tg.initDataUnsafe?.user || null,\
-        submittedAt: new Date().toISOString(),\
-        predictions\
-      \};\
-\
-      tg.sendData(JSON.stringify(payload));\
-      tg.close();\
-    \}\
-\
-    renderMatches();\
-  </script>\
-</body>\
-</html>\
-}
+    <div id="matches"></div>
+
+    <button onclick="submitPredictions()">Отправить прогнозы</button>
+    <div class="small">Данные будут отправлены организатору тотализатора.</div>
+  </div>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    const matches = [
+      { id: 1, home: "🇺🇸 США", away: "🇲🇽 Мексика", deadline: "10 июня, 11:00" },
+      { id: 2, home: "🇧🇷 Бразилия", away: "🇩🇪 Германия", deadline: "10 июня, 14:00" },
+      { id: 3, home: "🇫🇷 Франция", away: "🇦🇷 Аргентина", deadline: "11 июня, 09:00" }
+    ];
+
+    function renderMatches() {
+      const container = document.getElementById("matches");
+      container.innerHTML = matches.map(match => `
+        <div class="card" data-id="${match.id}">
+          <div class="teams">${match.home} - ${match.away}</div>
+          <div class="deadline">Прием прогнозов до: ${match.deadline}</div>
+          <div class="score-row">
+            <input type="number" min="0" max="20" id="home-${match.id}" placeholder="0" />
+            <span class="colon">:</span>
+            <input type="number" min="0" max="20" id="away-${match.id}" placeholder="0" />
+          </div>
+          <div class="penalty">
+            Пенальти, если матч плей-офф:
+            <select id="penalty-${match.id}">
+              <option value="">Нет / не нужно</option>
+              <option value="${match.home}">${match.home}</option>
+              <option value="${match.away}">${match.away}</option>
+            </select>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function submitPredictions() {
+      const predictions = matches.map(match => {
+        const homeScore = document.getElementById(`home-${match.id}`).value;
+        const awayScore = document.getElementById(`away-${match.id}`).value;
+        const penaltyWinner = document.getElementById(`penalty-${match.id}`).value;
+
+        return {
+          matchId: match.id,
+          match: `${match.home} - ${match.away}`,
+          score: `${homeScore}:${awayScore}`,
+          penaltyWinner: penaltyWinner || null
+        };
+      });
+
+      const empty = predictions.some(p => p.score.includes(":" ) && (p.score.startsWith(":") || p.score.endsWith(":")));
+      if (empty) {
+        tg.showAlert("Пожалуйста, заполните счет для всех матчей.");
+        return;
+      }
+
+      const payload = {
+        user: tg.initDataUnsafe?.user || null,
+        submittedAt: new Date().toISOString(),
+        predictions
+      };
+
+      tg.sendData(JSON.stringify(payload));
+      tg.close();
+    }
+
+    renderMatches();
+  </script>
+</body>
+</html>
