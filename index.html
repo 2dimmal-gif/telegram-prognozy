@@ -232,6 +232,75 @@
       text-align: center;
       display: none;
     }
+
+    .phase-header {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--tg-button);
+      padding: 14px 4px 6px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      margin-top: 4px;
+    }
+
+    .playoff-extras {
+      margin-top: 10px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      padding-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .playoff-field {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .playoff-field label {
+      font-size: 11px;
+      color: var(--tg-hint);
+      flex: 1;
+    }
+
+    .toggle-group {
+      display: flex;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.15);
+      flex-shrink: 0;
+    }
+
+    .toggle-btn {
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      background: transparent;
+      color: var(--tg-hint);
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .toggle-btn.active {
+      background: var(--tg-button);
+      color: var(--tg-button-text);
+    }
+
+    .playoff-select {
+      background: rgba(255,255,255,0.08);
+      border: 1.5px solid rgba(255,255,255,0.15);
+      border-radius: 6px;
+      color: var(--tg-text);
+      font-size: 12px;
+      padding: 5px 8px;
+      outline: none;
+      max-width: 150px;
+      flex-shrink: 0;
+    }
   </style>
 </head>
 <body>
@@ -268,59 +337,112 @@
   // ─────────────────────────────────────────────────────────────────
 
   // ─── MATCH FIXTURES ──────────────────────────────────────────────
-  // Each match has a `round` field. Only matches where
-  // match.round === currentRound will be shown.
+  // type: "group"  → score only (home_score, away_score)
+  // type: "playoff"→ score + ET winner + penalty shootout + penalty winner
+  // Each group also has a type that controls the phase header label.
   const matchGroups = [
     {
       label: "Группа A",
+      type: "group",
       matches: [
-        { id: "a1", round: 1, home: "USA",      homeFlag: "🇺🇸", away: "Canada",    awayFlag: "🇨🇦", date: "12 июн" },
-        { id: "a2", round: 1, home: "Uruguay",  homeFlag: "🇺🇾", away: "Portugal",  awayFlag: "🇵🇹", date: "12 июн" },
-        { id: "a3", round: 2, home: "USA",      homeFlag: "🇺🇸", away: "Uruguay",   awayFlag: "🇺🇾", date: "17 июн" },
-        { id: "a4", round: 2, home: "Canada",   homeFlag: "🇨🇦", away: "Portugal",  awayFlag: "🇵🇹", date: "17 июн" },
-        { id: "a5", round: 3, home: "Canada",   homeFlag: "🇨🇦", away: "Uruguay",   awayFlag: "🇺🇾", date: "22 июн" },
-        { id: "a6", round: 3, home: "Portugal", homeFlag: "🇵🇹", away: "USA",       awayFlag: "🇺🇸", date: "22 июн" },
+        { id: "a1", round: 1, type: "group", home: "USA",      homeFlag: "🇺🇸", away: "Canada",    awayFlag: "🇨🇦", date: "12 июн" },
+        { id: "a2", round: 1, type: "group", home: "Uruguay",  homeFlag: "🇺🇾", away: "Portugal",  awayFlag: "🇵🇹", date: "12 июн" },
+        { id: "a3", round: 2, type: "group", home: "USA",      homeFlag: "🇺🇸", away: "Uruguay",   awayFlag: "🇺🇾", date: "17 июн" },
+        { id: "a4", round: 2, type: "group", home: "Canada",   homeFlag: "🇨🇦", away: "Portugal",  awayFlag: "🇵🇹", date: "17 июн" },
+        { id: "a5", round: 3, type: "group", home: "Canada",   homeFlag: "🇨🇦", away: "Uruguay",   awayFlag: "🇺🇾", date: "22 июн" },
+        { id: "a6", round: 3, type: "group", home: "Portugal", homeFlag: "🇵🇹", away: "USA",       awayFlag: "🇺🇸", date: "22 июн" },
       ]
     },
     {
       label: "Группа B",
+      type: "group",
       matches: [
-        { id: "b1", round: 1, home: "Argentina", homeFlag: "🇦🇷", away: "Chile",     awayFlag: "🇨🇱", date: "13 июн" },
-        { id: "b2", round: 1, home: "England",   homeFlag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", away: "Peru",      awayFlag: "🇵🇪", date: "13 июн" },
-        { id: "b3", round: 2, home: "Argentina", homeFlag: "🇦🇷", away: "England",   awayFlag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", date: "18 июн" },
-        { id: "b4", round: 2, home: "Chile",     homeFlag: "🇨🇱", away: "Peru",      awayFlag: "🇵🇪", date: "18 июн" },
-        { id: "b5", round: 3, home: "Chile",     homeFlag: "🇨🇱", away: "England",   awayFlag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", date: "23 июн" },
-        { id: "b6", round: 3, home: "Peru",      homeFlag: "🇵🇪", away: "Argentina", awayFlag: "🇦🇷", date: "23 июн" },
+        { id: "b1", round: 1, type: "group", home: "Argentina", homeFlag: "🇦🇷", away: "Chile",     awayFlag: "🇨🇱", date: "13 июн" },
+        { id: "b2", round: 1, type: "group", home: "England",   homeFlag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", away: "Peru",      awayFlag: "🇵🇪", date: "13 июн" },
+        { id: "b3", round: 2, type: "group", home: "Argentina", homeFlag: "🇦🇷", away: "England",   awayFlag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", date: "18 июн" },
+        { id: "b4", round: 2, type: "group", home: "Chile",     homeFlag: "🇨🇱", away: "Peru",      awayFlag: "🇵🇪", date: "18 июн" },
+        { id: "b5", round: 3, type: "group", home: "Chile",     homeFlag: "🇨🇱", away: "England",   awayFlag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", date: "23 июн" },
+        { id: "b6", round: 3, type: "group", home: "Peru",      homeFlag: "🇵🇪", away: "Argentina", awayFlag: "🇦🇷", date: "23 июн" },
       ]
     },
     {
       label: "Группа C",
+      type: "group",
       matches: [
-        { id: "c1", round: 1, home: "France",  homeFlag: "🇫🇷", away: "Mexico",  awayFlag: "🇲🇽", date: "14 июн" },
-        { id: "c2", round: 1, home: "Germany", homeFlag: "🇩🇪", away: "Japan",   awayFlag: "🇯🇵", date: "14 июн" },
-        { id: "c3", round: 2, home: "France",  homeFlag: "🇫🇷", away: "Germany", awayFlag: "🇩🇪", date: "19 июн" },
-        { id: "c4", round: 2, home: "Mexico",  homeFlag: "🇲🇽", away: "Japan",   awayFlag: "🇯🇵", date: "19 июн" },
-        { id: "c5", round: 3, home: "Mexico",  homeFlag: "🇲🇽", away: "Germany", awayFlag: "🇩🇪", date: "24 июн" },
-        { id: "c6", round: 3, home: "Japan",   homeFlag: "🇯🇵", away: "France",  awayFlag: "🇫🇷", date: "24 июн" },
+        { id: "c1", round: 1, type: "group", home: "France",  homeFlag: "🇫🇷", away: "Mexico",  awayFlag: "🇲🇽", date: "14 июн" },
+        { id: "c2", round: 1, type: "group", home: "Germany", homeFlag: "🇩🇪", away: "Japan",   awayFlag: "🇯🇵", date: "14 июн" },
+        { id: "c3", round: 2, type: "group", home: "France",  homeFlag: "🇫🇷", away: "Germany", awayFlag: "🇩🇪", date: "19 июн" },
+        { id: "c4", round: 2, type: "group", home: "Mexico",  homeFlag: "🇲🇽", away: "Japan",   awayFlag: "🇯🇵", date: "19 июн" },
+        { id: "c5", round: 3, type: "group", home: "Mexico",  homeFlag: "🇲🇽", away: "Germany", awayFlag: "🇩🇪", date: "24 июн" },
+        { id: "c6", round: 3, type: "group", home: "Japan",   homeFlag: "🇯🇵", away: "France",  awayFlag: "🇫🇷", date: "24 июн" },
       ]
     },
     {
       label: "Группа D",
+      type: "group",
       matches: [
-        { id: "d1", round: 1, home: "Brazil",  homeFlag: "🇧🇷", away: "Nigeria",  awayFlag: "🇳🇬", date: "15 июн" },
-        { id: "d2", round: 1, home: "Spain",   homeFlag: "🇪🇸", away: "Morocco",  awayFlag: "🇲🇦", date: "15 июн" },
-        { id: "d3", round: 2, home: "Brazil",  homeFlag: "🇧🇷", away: "Spain",    awayFlag: "🇪🇸", date: "20 июн" },
-        { id: "d4", round: 2, home: "Nigeria", homeFlag: "🇳🇬", away: "Morocco",  awayFlag: "🇲🇦", date: "20 июн" },
-        { id: "d5", round: 3, home: "Nigeria", homeFlag: "🇳🇬", away: "Spain",    awayFlag: "🇪🇸", date: "25 июн" },
-        { id: "d6", round: 3, home: "Morocco", homeFlag: "🇲🇦", away: "Brazil",   awayFlag: "🇧🇷", date: "25 июн" },
+        { id: "d1", round: 1, type: "group", home: "Brazil",  homeFlag: "🇧🇷", away: "Nigeria",  awayFlag: "🇳🇬", date: "15 июн" },
+        { id: "d2", round: 1, type: "group", home: "Spain",   homeFlag: "🇪🇸", away: "Morocco",  awayFlag: "🇲🇦", date: "15 июн" },
+        { id: "d3", round: 2, type: "group", home: "Brazil",  homeFlag: "🇧🇷", away: "Spain",    awayFlag: "🇪🇸", date: "20 июн" },
+        { id: "d4", round: 2, type: "group", home: "Nigeria", homeFlag: "🇳🇬", away: "Morocco",  awayFlag: "🇲🇦", date: "20 июн" },
+        { id: "d5", round: 3, type: "group", home: "Nigeria", homeFlag: "🇳🇬", away: "Spain",    awayFlag: "🇪🇸", date: "25 июн" },
+        { id: "d6", round: 3, type: "group", home: "Morocco", homeFlag: "🇲🇦", away: "Brazil",   awayFlag: "🇧🇷", date: "25 июн" },
       ]
     },
+    // ── Playoff rounds — add matches here when teams are known ──────
+    // Example structure (set round numbers to match currentRound when active):
+    // {
+    //   label: "1/8 финала",
+    //   type: "playoff",
+    //   matches: [
+    //     { id: "r16_1", round: 4, type: "playoff", home: "TBD", homeFlag: "🏳️", away: "TBD", awayFlag: "🏳️", date: "30 июн" },
+    //   ]
+    // },
   ];
   // ─────────────────────────────────────────────────────────────────
 
   // Only matches for the current round
   const roundMatches = matchGroups.flatMap(g => g.matches).filter(m => m.round === currentRound);
   const totalMatches = roundMatches.length;
+
+  function buildPlayoffExtras(match) {
+    return `
+      <div class="playoff-extras">
+        <div class="playoff-field">
+          <label>Победитель в доп. вр.</label>
+          <select class="playoff-select" id="et_winner_${match.id}">
+            <option value="">— нет —</option>
+            <option value="${match.home}">${match.home}</option>
+            <option value="${match.away}">${match.away}</option>
+          </select>
+        </div>
+        <div class="playoff-field">
+          <label>Серия пенальти</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="pen_no_${match.id}"
+                    onclick="setPenalty('${match.id}', false)">Нет</button>
+            <button class="toggle-btn" id="pen_yes_${match.id}"
+                    onclick="setPenalty('${match.id}', true)">Да</button>
+          </div>
+        </div>
+        <div class="playoff-field" id="pen_winner_row_${match.id}" style="display:none">
+          <label>Победитель пенальти</label>
+          <select class="playoff-select" id="pen_winner_${match.id}">
+            <option value="">—</option>
+            <option value="${match.home}">${match.home}</option>
+            <option value="${match.away}">${match.away}</option>
+          </select>
+        </div>
+      </div>`;
+  }
+
+  function setPenalty(matchId, isYes) {
+    document.getElementById(`pen_no_${matchId}`).classList.toggle("active", !isYes);
+    document.getElementById(`pen_yes_${matchId}`).classList.toggle("active", isYes);
+    const row = document.getElementById(`pen_winner_row_${matchId}`);
+    row.style.display = isYes ? "" : "none";
+    if (!isYes) document.getElementById(`pen_winner_${matchId}`).value = "";
+  }
 
   function renderMatches() {
     const container = document.getElementById("matchesContainer");
@@ -329,19 +451,33 @@
     document.querySelector("header p").textContent =
       `Тур ${currentRound} — введи счёт для каждого матча`;
 
+    let lastPhase = null;
+
     for (const group of matchGroups) {
       const groupRoundMatches = group.matches.filter(m => m.round === currentRound);
       if (groupRoundMatches.length === 0) continue;
 
+      const phase = group.type || "group";
+
+      // Insert phase header when phase changes
+      if (phase !== lastPhase) {
+        const phaseEl = document.createElement("div");
+        phaseEl.className = "phase-header";
+        phaseEl.textContent = phase === "playoff" ? "🏆 Плей-офф" : "🏟 Групповой этап";
+        container.appendChild(phaseEl);
+        lastPhase = phase;
+      }
+
       const section = document.createElement("div");
       section.className = "group-section";
 
-      const label = document.createElement("div");
-      label.className = "group-label";
-      label.textContent = group.label;
-      section.appendChild(label);
+      const labelEl = document.createElement("div");
+      labelEl.className = "group-label";
+      labelEl.textContent = group.label;
+      section.appendChild(labelEl);
 
       for (const match of groupRoundMatches) {
+        const isPlayoff = match.type === "playoff";
         const card = document.createElement("div");
         card.className = "match-card";
         card.innerHTML = `
@@ -352,27 +488,13 @@
                 <span class="team-name">${match.home}</span>
               </div>
               <div class="score-inputs">
-                <input
-                  class="score-input"
-                  id="home_${match.id}"
-                  type="number"
-                  min="0"
-                  max="99"
-                  placeholder="0"
-                  oninput="updateProgress()"
-                  inputmode="numeric"
-                />
+                <input class="score-input" id="home_${match.id}" type="number"
+                       min="0" max="99" placeholder="0"
+                       oninput="updateProgress()" inputmode="numeric" />
                 <span class="score-separator">–</span>
-                <input
-                  class="score-input"
-                  id="away_${match.id}"
-                  type="number"
-                  min="0"
-                  max="99"
-                  placeholder="0"
-                  oninput="updateProgress()"
-                  inputmode="numeric"
-                />
+                <input class="score-input" id="away_${match.id}" type="number"
+                       min="0" max="99" placeholder="0"
+                       oninput="updateProgress()" inputmode="numeric" />
               </div>
               <div class="team">
                 <span class="team-flag">${match.awayFlag || "🏳️"}</span>
@@ -380,6 +502,7 @@
               </div>
             </div>
             <div class="match-date">${match.date}</div>
+            ${isPlayoff ? buildPlayoffExtras(match) : ""}
           </div>
         `;
         section.appendChild(card);
@@ -411,13 +534,26 @@
     const predictions = roundMatches.map(match => {
       const hs = document.getElementById(`home_${match.id}`).value;
       const as_ = document.getElementById(`away_${match.id}`).value;
-      return {
+      const pred = {
+        type: match.type || "group",
         round: match.round,
         home: match.home,
         away: match.away,
         home_score: hs !== "" ? parseInt(hs) : null,
         away_score: as_ !== "" ? parseInt(as_) : null,
       };
+
+      if (match.type === "playoff") {
+        pred.winner_after_extra_time =
+          document.getElementById(`et_winner_${match.id}`)?.value || null;
+        const penYes = document.getElementById(`pen_yes_${match.id}`);
+        pred.penalty_shootout = penYes?.classList.contains("active") ?? false;
+        pred.penalty_winner = pred.penalty_shootout
+          ? (document.getElementById(`pen_winner_${match.id}`)?.value || null)
+          : null;
+      }
+
+      return pred;
     }).filter(p => p.home_score !== null && p.away_score !== null);
 
     if (predictions.length === 0) {
